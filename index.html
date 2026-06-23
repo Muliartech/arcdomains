@@ -3,141 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arc Domains - Web3 Identity</title>
+    <title>arc.domains | Web3 Identity</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-[#FAFAFA] text-neutral-900 font-sans min-h-screen flex flex-col items-center selection:bg-black selection:text-white">
 
-    <header class="p-5 flex justify-between items-center border-b border-slate-800">
-        <h1 class="text-xl font-bold text-sky-400">🌀 Arc Domains</h1>
-        <button id="connectBtn" class="bg-sky-500 hover:bg-sky-600 px-4 py-2 rounded-xl text-sm font-semibold transition">
+    <nav class="w-full max-w-5xl flex justify-between items-center p-6">
+        <div class="font-bold text-2xl tracking-tighter">arc.domains</div>
+        <button id="connectBtn" class="bg-black text-white px-5 py-2 rounded-xl font-medium shadow-sm hover:bg-neutral-800 transition">
             Connect Wallet
         </button>
-    </header>
+    </nav>
 
-    <main class="max-w-md mx-auto p-4 w-full flex-grow flex flex-col justify-center">
-        <div class="bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700">
-            <h2 class="text-xl font-bold mb-1 text-center">Claim your .arc Name</h2>
-            <p id="walletAddress" class="text-center text-xs text-slate-400 mb-6 truncate">Wallet not connected</p>
+    <main class="flex-1 flex flex-col items-center justify-center w-full px-6 text-center -mt-10">
+        <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+            Own your identity on <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">Arc Network</span>
+        </h1>
+        <p class="text-lg text-neutral-500 mb-10 max-w-md mx-auto">
+            Register your web3 domain for 10 USDC. Minimalist, fast, and fully decentralized.
+        </p>
 
-            <div class="mb-6">
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2 font-semibold">Register Name</label>
-                <div class="flex">
-                    <input id="domainInput" type="text" placeholder="yourname" class="bg-slate-900 border border-slate-700 rounded-l-xl px-4 py-2.5 w-full focus:outline-none focus:border-sky-500 text-white">
-                    <span class="bg-slate-700 text-slate-300 px-4 flex items-center rounded-r-xl font-bold">.arc</span>
-                </div>
-                <button id="registerBtn" class="w-full mt-3 bg-emerald-500 hover:bg-emerald-600 py-3 rounded-xl font-bold transition">
-                    Register Domain
-                </button>
-            </div>
-
-            <hr class="border-slate-700 my-5">
-
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-2 font-semibold">Search Registry</label>
-                <div class="flex">
-                    <input id="lookupInput" type="text" placeholder="searchname" class="bg-slate-900 border border-slate-700 rounded-l-xl px-4 py-2.5 w-full focus:outline-none focus:border-sky-500 text-white">
-                    <span class="bg-slate-700 text-slate-300 px-4 flex items-center rounded-r-xl font-bold">.arc</span>
-                </div>
-                <button id="lookupBtn" class="w-full mt-3 bg-indigo-500 hover:bg-indigo-600 py-3 rounded-xl font-bold transition">
-                    Check Availability / Owner
-                </button>
-                <p id="lookupResult" class="mt-4 text-center text-sm font-medium break-all"></p>
-            </div>
+        <div class="w-full max-w-lg bg-white p-2 rounded-2xl shadow-sm border border-neutral-200 flex items-center transition-all focus-within:border-black focus-within:ring-1 focus-within:ring-black">
+            <input id="domainInput" type="text" placeholder="e.g. alice.arc" class="flex-1 outline-none px-4 py-2 text-lg bg-transparent placeholder-neutral-400">
+            <button id="registerBtn" class="bg-black text-white px-6 py-3 rounded-xl font-medium hover:bg-neutral-800 transition disabled:opacity-50">
+                Register
+            </button>
         </div>
+        
+        <p id="statusMsg" class="mt-6 text-sm font-medium text-neutral-600 h-6"></p>
     </main>
 
-    <footer class="p-4 text-center text-xs text-slate-600 border-t border-slate-800">
-        Deployed on Arc Testnet via Mobile
-    </footer>
-
     <script>
-        // CRITICAL STEP: Swap this out with your copied Smart Contract Address from Remix
-        const CONTRACT_ADDRESS = "0xBD4691694F7d1c6d6e1dabc0C5f2373931A9da1A";
+        // --- ARC TESTNET CONFIGURATION --- //
+        const ARC_RPC = "https://rpc.testnet.arc.network";
+        const CHAIN_ID = 5042002; 
+        const CONTRACT_ADDRESS = "0x036d43dc4b52bf581EbD3527444cF845C00119e4"; // Your deployed contract
+        const USDC_ADDRESS = "0x3600000000000000000000000000000000000000"; // Arc Testnet USDC
 
-        // Human-Readable ABI mapping the contract functions
-        const CONTRACT_ABI = [
-            "function registerDomain(string memory _name) public",
-            "function getOwner(string memory _name) public view returns (address)"
-        ];
+        // Minimal ABIs to execute the transactions
+        const usdcABI = ["function approve(address spender, uint256 amount) public returns (bool)"];
+        const domainABI = ["function registerDomain(string memory domain) public"];
 
-        let provider, signer, contract;
+        let provider, signer;
 
         const connectBtn = document.getElementById('connectBtn');
-        const walletAddressTxt = document.getElementById('walletAddress');
-        const domainInput = document.getElementById('domainInput');
         const registerBtn = document.getElementById('registerBtn');
-        const lookupInput = document.getElementById('lookupInput');
-        const lookupBtn = document.getElementById('lookupBtn');
-        const lookupResult = document.getElementById('lookupResult');
+        const domainInput = document.getElementById('domainInput');
+        const statusMsg = document.getElementById('statusMsg');
 
-        async function init() {
-            if (window.ethereum) {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                window.ethereum.on('accountsChanged', () => { location.reload(); });
-                window.ethereum.on('chainChanged', () => { location.reload(); });
-            }
-        }
+        // Helper function for status messages
+        const setStatus = (msg, isError = false) => {
+            statusMsg.textContent = msg;
+            statusMsg.style.color = isError ? "#ef4444" : "#525252"; // Red for errors, neutral for normal
+        };
 
-        async function connectWallet() {
-            if (!provider) return alert("Open this link inside the MetaMask App Browser!");
+        // 1. Connect Wallet & Switch to Arc Testnet
+        connectBtn.addEventListener('click', async () => {
+            if (!window.ethereum) return setStatus("Please install a Web3 wallet like MetaMask.", true);
+            
             try {
-                await provider.send("eth_requestAccounts", []);
-                signer = provider.getSigner();
+                setStatus("Connecting...");
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
                 const address = await signer.getAddress();
-                walletAddressTxt.innerText = `Wallet: ${address}`;
-                connectBtn.innerText = "Connected App";
-                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-            } catch (err) {
-                alert("Connection failed.");
-            }
-        }
-
-        async function registerDomain() {
-            if (!contract) return alert("Connect wallet first!");
-            const name = domainInput.value.trim().toLowerCase();
-            if (!name) return alert("Type a valid domain string!");
-
-            try {
-                registerBtn.innerText = "Check Wallet Prompt...";
-                const tx = await contract.registerDomain(name);
-                await tx.wait();
-                alert(`Success! "${name}.arc" is yours.`);
-                registerBtn.innerText = "Register Domain";
-                domainInput.value = "";
-            } catch (err) {
-                alert("Transaction failed. Name might be taken or you lack gas.");
-                registerBtn.innerText = "Register Domain";
-            }
-        }
-
-        async function lookupDomain() {
-            if (!provider) return alert("Web3 provider uninitialized.");
-            const name = lookupInput.value.trim().toLowerCase();
-            if (!name) return alert("Enter a name!");
-
-            const activeContract = contract || new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-
-            try {
-                const owner = await activeContract.getOwner(name);
-                if (owner === "0x0000000000000000000000000000000000000000") {
-                    lookupResult.innerText = `🎉 "${name}.arc" is available!`;
-                    lookupResult.className = "mt-4 text-center text-sm font-medium text-green-400";
-                } else {
-                    lookupResult.innerText = `Owned by: ${owner}`;
-                    lookupResult.className = "mt-4 text-center text-sm font-medium text-amber-400 break-all";
+                
+                // Update Button UI
+                connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
+                connectBtn.classList.replace('bg-black', 'bg-neutral-100');
+                connectBtn.classList.replace('text-white', 'text-black');
+                
+                // Force network switch to Arc Testnet
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: ethers.toBeHex(CHAIN_ID) }],
+                    });
+                } catch (switchError) {
+                    // This error code indicates that the chain has not been added to MetaMask
+                    if (switchError.code === 4902) {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: ethers.toBeHex(CHAIN_ID),
+                                chainName: 'Arc Testnet',
+                                rpcUrls: [ARC_RPC],
+                                nativeCurrency: { name: 'ARC', symbol: 'ARC', decimals: 18 },
+                                blockExplorerUrls: ['https://explorer.testnet.arc.network']
+                            }]
+                        });
+                    } else {
+                        throw switchError;
+                    }
                 }
+                setStatus("Wallet connected to Arc Testnet.");
             } catch (err) {
-                alert("Lookup failed.");
+                setStatus("Connection failed: " + err.message, true);
             }
-        }
+        });
 
-        connectBtn.addEventListener('click', connectWallet);
-        registerBtn.addEventListener('click', registerDomain);
-        lookupBtn.addEventListener('click', lookupDomain);
-        window.addEventListener('load', init);
+        // 2. Register Domain Flow (Approve USDC -> Register)
+        registerBtn.addEventListener('click', async () => {
+            if (!signer) return setStatus("Please connect your wallet first.", true);
+            
+            let domain = domainInput.value.trim().toLowerCase();
+            if (!domain) return setStatus("Please enter a domain name.", true);
+            
+            // Auto-append .arc if user forgot it
+            if (!domain.endsWith('.arc')) {
+                domain += '.arc';
+                domainInput.value = domain;
+            }
+
+            try {
+                registerBtn.disabled = true;
+                const usdcContract = new ethers.Contract(USDC_ADDRESS, usdcABI, signer);
+                const domainContract = new ethers.Contract(CONTRACT_ADDRESS, domainABI, signer);
+                
+                // 10 USDC (USDC uses 6 decimals)
+                const price = ethers.parseUnits("10", 6); 
+
+                // Step A: Approve USDC
+                setStatus("Step 1/2: Please approve 10 USDC in your wallet...");
+                const tx1 = await usdcContract.approve(CONTRACT_ADDRESS, price);
+                setStatus("Step 1/2: Waiting for approval transaction to confirm...");
+                await tx1.wait();
+
+                // Step B: Register Domain
+                setStatus("Step 2/2: Please confirm the domain registration...");
+                const tx2 = await domainContract.registerDomain(domain);
+                setStatus("Step 2/2: Registering your domain on-chain...");
+                await tx2.wait();
+
+                setStatus(`🎉 Success! You are now the proud owner of ${domain}.`);
+                domainInput.value = ''; // Clear input on success
+            } catch (err) {
+                console.error(err);
+                setStatus("Transaction failed: " + (err.reason || "User rejected or network error."), true);
+            } finally {
+                registerBtn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
-

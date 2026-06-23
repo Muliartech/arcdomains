@@ -1,150 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>arc.domains | Web3 Identity</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-</head>
-<body class="bg-[#FAFAFA] text-neutral-900 font-sans min-h-screen flex flex-col items-center selection:bg-black selection:text-white">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <nav class="w-full max-w-5xl flex justify-between items-center p-6">
-        <div class="font-bold text-2xl tracking-tighter">arc.domains</div>
-        <button id="connectBtn" class="bg-black text-white px-5 py-2 rounded-xl font-medium shadow-sm hover:bg-neutral-800 transition">
+<title>arc.domains | Web3 Identity on Arc</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+*{
+    font-family:'Inter',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#f8f8f7;
+}
+
+.gradient-text{
+    background:linear-gradient(90deg,#000,#444);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.glass{
+    backdrop-filter:blur(20px);
+}
+</style>
+</head>
+
+<body class="text-black">
+
+<!-- NAVBAR -->
+
+<header class="sticky top-0 z-50 glass bg-white/70 border-b border-black/5">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-black"></div>
+            <span class="font-bold text-xl tracking-tight">
+                arc.domains
+            </span>
+        </div>
+
+        <button
+            id="connectBtn"
+            class="bg-black text-white px-5 py-3 rounded-2xl font-medium hover:opacity-90 transition">
             Connect Wallet
         </button>
-    </nav>
 
-    <main class="flex-1 flex flex-col items-center justify-center w-full px-6 text-center -mt-10">
-        <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-            Own your identity on <br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">Arc Network</span>
+    </div>
+</header>
+
+<!-- HERO -->
+
+<section class="max-w-7xl mx-auto px-6 pt-24 pb-20">
+
+    <div class="text-center">
+
+        <div class="inline-flex items-center px-4 py-2 rounded-full border border-black/10 bg-white text-sm font-medium mb-8">
+            Arc Network Identity Protocol
+        </div>
+
+        <h1 class="text-6xl md:text-8xl font-black tracking-tight leading-none max-w-5xl mx-auto">
+            Own Your<br>
+            Digital Identity<br>
+            On Arc
         </h1>
-        <p class="text-lg text-neutral-500 mb-10 max-w-md mx-auto">
-            Register your web3 domain for 10 USDC. Minimalist, fast, and fully decentralized.
+
+        <p class="mt-8 text-xl text-neutral-500 max-w-2xl mx-auto leading-relaxed">
+            Register a permanent .arc domain secured by smart contracts
+            and settle instantly using USDC.
         </p>
 
-        <div class="w-full max-w-lg bg-white p-2 rounded-2xl shadow-sm border border-neutral-200 flex items-center transition-all focus-within:border-black focus-within:ring-1 focus-within:ring-black">
-            <input id="domainInput" type="text" placeholder="e.g. alice.arc" class="flex-1 outline-none px-4 py-2 text-lg bg-transparent placeholder-neutral-400">
-            <button id="registerBtn" class="bg-black text-white px-6 py-3 rounded-xl font-medium hover:bg-neutral-800 transition disabled:opacity-50">
-                Register
-            </button>
+    </div>
+
+    <!-- DOMAIN SEARCH -->
+
+    <div class="max-w-3xl mx-auto mt-16">
+
+        <div class="bg-white rounded-3xl border border-black/10 shadow-sm p-3">
+
+            <div class="flex flex-col md:flex-row gap-3">
+
+                <div class="flex-1 flex items-center bg-neutral-50 rounded-2xl px-5">
+
+                    <input
+                        id="domainInput"
+                        type="text"
+                        placeholder="yourname"
+                        class="flex-1 py-5 bg-transparent outline-none text-lg">
+
+                    <span class="font-semibold text-neutral-400">
+                        .arc
+                    </span>
+
+                </div>
+
+                <button
+                    id="registerBtn"
+                    class="bg-black text-white px-8 py-5 rounded-2xl font-medium hover:opacity-90 transition disabled:opacity-50">
+                    Register Domain
+                </button>
+
+            </div>
+
         </div>
-        
-        <p id="statusMsg" class="mt-6 text-sm font-medium text-neutral-600 h-6"></p>
-    </main>
 
-    <script>
-        // --- ARC TESTNET CONFIGURATION --- //
-        const ARC_RPC = "https://rpc.testnet.arc.network";
-        const CHAIN_ID = 5042002; 
-        const CONTRACT_ADDRESS = "0x036d43dc4b52bf581EbD3527444cF845C00119e4"; // Your deployed contract
-        const USDC_ADDRESS = "0x3600000000000000000000000000000000000000"; // Arc Testnet USDC
+        <div
+            id="statusMsg"
+            class="mt-5 text-center text-sm text-neutral-500 min-h-[24px]">
+        </div>
 
-        // Minimal ABIs to execute the transactions
-        const usdcABI = ["function approve(address spender, uint256 amount) public returns (bool)"];
-        const domainABI = ["function registerDomain(string memory domain) public"];
+    </div>
 
-        let provider, signer;
+</section>
 
-        const connectBtn = document.getElementById('connectBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const domainInput = document.getElementById('domainInput');
-        const statusMsg = document.getElementById('statusMsg');
+<!-- FEATURES -->
 
-        // Helper function for status messages
-        const setStatus = (msg, isError = false) => {
-            statusMsg.textContent = msg;
-            statusMsg.style.color = isError ? "#ef4444" : "#525252"; // Red for errors, neutral for normal
-        };
+<section class="max-w-6xl mx-auto px-6 pb-24">
 
-        // 1. Connect Wallet & Switch to Arc Testnet
-        connectBtn.addEventListener('click', async () => {
-            if (!window.ethereum) return setStatus("Please install a Web3 wallet like MetaMask.", true);
-            
-            try {
-                setStatus("Connecting...");
-                provider = new ethers.BrowserProvider(window.ethereum);
-                signer = await provider.getSigner();
-                const address = await signer.getAddress();
-                
-                // Update Button UI
-                connectBtn.textContent = address.slice(0,6) + "..." + address.slice(-4);
-                connectBtn.classList.replace('bg-black', 'bg-neutral-100');
-                connectBtn.classList.replace('text-white', 'text-black');
-                
-                // Force network switch to Arc Testnet
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: ethers.toBeHex(CHAIN_ID) }],
-                    });
-                } catch (switchError) {
-                    // This error code indicates that the chain has not been added to MetaMask
-                    if (switchError.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: ethers.toBeHex(CHAIN_ID),
-                                chainName: 'Arc Testnet',
-                                rpcUrls: [ARC_RPC],
-                                nativeCurrency: { name: 'ARC', symbol: 'ARC', decimals: 18 },
-                                blockExplorerUrls: ['https://explorer.testnet.arc.network']
-                            }]
-                        });
-                    } else {
-                        throw switchError;
-                    }
-                }
-                setStatus("Wallet connected to Arc Testnet.");
-            } catch (err) {
-                setStatus("Connection failed: " + err.message, true);
+    <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-white p-8 rounded-3xl border border-black/5">
+            <h3 class="text-xl font-semibold mb-3">
+                True Ownership
+            </h3>
+            <p class="text-neutral-500">
+                Domains are owned directly by your wallet and secured on-chain.
+            </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-black/5">
+            <h3 class="text-xl font-semibold mb-3">
+                USDC Settlement
+            </h3>
+            <p class="text-neutral-500">
+                Simple fixed pricing with USDC for transparent registration.
+            </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-black/5">
+            <h3 class="text-xl font-semibold mb-3">
+                Arc Native
+            </h3>
+            <p class="text-neutral-500">
+                Built specifically for the Arc ecosystem and future Web3 identity.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="border-t border-black/5">
+
+    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between gap-4">
+
+        <div class="font-semibold">
+            arc.domains
+        </div>
+
+        <div class="text-sm text-neutral-500">
+            Decentralized identity infrastructure for Arc Network.
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+
+const ARC_RPC = "https://rpc.testnet.arc.network";
+const CHAIN_ID = 5042002;
+
+const CONTRACT_ADDRESS = "0x036d43dc4b52bf581EbD3527444cF845C00119e4";
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
+
+const usdcABI = [
+    "function approve(address spender,uint256 amount) public returns (bool)"
+];
+
+const domainABI = [
+    "function registerDomain(string memory domain) public"
+];
+
+let provider;
+let signer;
+
+const connectBtn = document.getElementById("connectBtn");
+const registerBtn = document.getElementById("registerBtn");
+const domainInput = document.getElementById("domainInput");
+const statusMsg = document.getElementById("statusMsg");
+
+function setStatus(msg,isError=false){
+
+    statusMsg.textContent = msg;
+
+    if(isError){
+        statusMsg.className =
+        "mt-5 text-center text-sm text-red-500 min-h-[24px]";
+    }else{
+        statusMsg.className =
+        "mt-5 text-center text-sm text-neutral-500 min-h-[24px]";
+    }
+}
+
+connectBtn.addEventListener("click", async () => {
+
+    if(!window.ethereum){
+        return setStatus(
+            "Please install MetaMask or another Web3 wallet.",
+            true
+        );
+    }
+
+    try{
+
+        setStatus("Connecting wallet...");
+
+        provider = new ethers.BrowserProvider(window.ethereum);
+
+        signer = await provider.getSigner();
+
+        const address = await signer.getAddress();
+
+        try{
+
+            await window.ethereum.request({
+                method:"wallet_switchEthereumChain",
+                params:[{
+                    chainId:ethers.toBeHex(CHAIN_ID)
+                }]
+            });
+
+        }catch(error){
+
+            if(error.code === 4902){
+
+                await window.ethereum.request({
+                    method:"wallet_addEthereumChain",
+                    params:[{
+                        chainId:ethers.toBeHex(CHAIN_ID),
+                        chainName:"Arc Testnet",
+                        rpcUrls:[ARC_RPC],
+                        nativeCurrency:{
+                            name:"ARC",
+                            symbol:"ARC",
+                            decimals:18
+                        },
+                        blockExplorerUrls:[
+                            "https://explorer.testnet.arc.network"
+                        ]
+                    }]
+                });
+
+            }else{
+                throw error;
             }
-        });
+        }
 
-        // 2. Register Domain Flow (Approve USDC -> Register)
-        registerBtn.addEventListener('click', async () => {
-            if (!signer) return setStatus("Please connect your wallet first.", true);
-            
-            let domain = domainInput.value.trim().toLowerCase();
-            if (!domain) return setStatus("Please enter a domain name.", true);
-            
-            // Auto-append .arc if user forgot it
-            if (!domain.endsWith('.arc')) {
-                domain += '.arc';
-                domainInput.value = domain;
-            }
+        connectBtn.textContent =
+            address.slice(0,6) +
+            "..." +
+            address.slice(-4);
 
-            try {
-                registerBtn.disabled = true;
-                const usdcContract = new ethers.Contract(USDC_ADDRESS, usdcABI, signer);
-                const domainContract = new ethers.Contract(CONTRACT_ADDRESS, domainABI, signer);
-                
-                // 10 USDC (USDC uses 6 decimals)
-                const price = ethers.parseUnits("10", 6); 
+        setStatus("Wallet connected successfully.");
 
-                // Step A: Approve USDC
-                setStatus("Step 1/2: Please approve 10 USDC in your wallet...");
-                const tx1 = await usdcContract.approve(CONTRACT_ADDRESS, price);
-                setStatus("Step 1/2: Waiting for approval transaction to confirm...");
-                await tx1.wait();
+    }catch(err){
 
-                // Step B: Register Domain
-                setStatus("Step 2/2: Please confirm the domain registration...");
-                const tx2 = await domainContract.registerDomain(domain);
-                setStatus("Step 2/2: Registering your domain on-chain...");
-                await tx2.wait();
+        setStatus(
+            "Connection failed: " + err.message,
+            true
+        );
+    }
 
-                setStatus(`🎉 Success! You are now the proud owner of ${domain}.`);
-                domainInput.value = ''; // Clear input on success
-            } catch (err) {
-                console.error(err);
-                setStatus("Transaction failed: " + (err.reason || "User rejected or network error."), true);
-            } finally {
-                registerBtn.disabled = false;
-            }
-        });
-    </script>
+});
+
+registerBtn.addEventListener("click", async () => {
+
+    if(!signer){
+        return setStatus(
+            "Connect wallet first.",
+            true
+        );
+    }
+
+    let domain =
+        domainInput.value.trim().toLowerCase();
+
+    if(!domain){
+        return setStatus(
+            "Enter a domain name.",
+            true
+        );
+    }
+
+    if(!domain.endsWith(".arc")){
+        domain += ".arc";
+    }
+
+    try{
+
+        registerBtn.disabled = true;
+
+        const usdc =
+            new ethers.Contract(
+                USDC_ADDRESS,
+                usdcABI,
+                signer
+            );
+
+        const registry =
+            new ethers.Contract(
+                CONTRACT_ADDRESS,
+                domainABI,
+                signer
+            );
+
+        const price =
+            ethers.parseUnits("10",6);
+
+        setStatus(
+            "Step 1/2: Approve 10 USDC..."
+        );
+
+        const tx1 =
+            await usdc.approve(
+                CONTRACT_ADDRESS,
+                price
+            );
+
+        await tx1.wait();
+
+        setStatus(
+            "Step 2/2: Registering domain..."
+        );
+
+        const tx2 =
+            await registry.registerDomain(
+                domain
+            );
+
+        await tx2.wait();
+
+        setStatus(
+            "🎉 Successfully registered " +
+            domain
+        );
+
+        domainInput.value = "";
+
+    }catch(err){
+
+        console.error(err);
+
+        setStatus(
+            "Transaction failed.",
+            true
+        );
+
+    }finally{
+
+        registerBtn.disabled = false;
+    }
+
+});
+</script>
+
 </body>
 </html>

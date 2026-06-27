@@ -49,12 +49,10 @@ body{
 </style>
 </head>
 
-<body class="text-neutral-100 selection:bg-pink-500 selection:text-white">
-
-<!-- NAVBAR -->
+<body class="text-neutral-100 selection:bg-pink-500 selection:text-white flex flex-col min-h-screen antialiased">
 
 <header class="sticky top-0 z-50 glass bg-[#090514]/70 border-b border-pink-500/20">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-end">
 
         <button
             id="connectBtn"
@@ -65,114 +63,110 @@ body{
     </div>
 </header>
 
-<!-- HERO -->
+<main class="flex-grow flex flex-col justify-center">
 
-<section class="max-w-7xl mx-auto px-6 pt-24 pb-20">
+    <section class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-12 md:pt-20 pb-12 md:pb-16">
 
-    <div class="text-center">
+        <div class="text-center">
 
-        <div class="inline-flex items-center px-4 py-2 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-400 text-sm font-medium tracking-wide mb-8 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
-            Arc Network Identity Protocol
+            <div class="inline-flex items-center px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-400 text-xs sm:text-sm font-medium tracking-wide mb-6 sm:mb-8 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+                Arc Network Identity Protocol
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[1.1] sm:leading-none max-w-5xl mx-auto text-white">
+                Own Your<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-400 to-cyan-400 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]">Digital Identity</span><br>
+                On Arc
+            </h1>
+
+            <p class="mt-6 sm:mt-8 text-base sm:text-lg md:text-xl text-purple-200/60 max-w-2xl mx-auto leading-relaxed px-2">
+                Register a permanent .arc domain secured by smart contracts
+                and settle instantly using USDC.
+            </p>
+
         </div>
 
-        <h1 class="text-6xl md:text-8xl font-black tracking-tight leading-none max-w-5xl mx-auto text-white">
-            Own Your<br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-400 to-cyan-400 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]">Digital Identity</span><br>
-            On Arc
-        </h1>
+        <div class="max-w-3xl mx-auto mt-10 sm:mt-16">
 
-        <p class="mt-8 text-xl text-purple-200/60 max-w-2xl mx-auto leading-relaxed">
-            Register a permanent .arc domain secured by smart contracts
-            and settle instantly using USDC.
-        </p>
+            <div class="bg-neutral-900/80 rounded-2xl sm:rounded-3xl border border-purple-500/20 shadow-[0_0_30px_rgba(147,51,234,0.15)] p-2 sm:p-3 backdrop-blur-md">
 
-    </div>
+                <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
 
-    <!-- DOMAIN SEARCH -->
+                    <div class="flex-1 flex items-center bg-black/40 border border-neutral-800 rounded-xl sm:rounded-2xl px-4 sm:px-5 focus-within:border-cyan-500/50 transition">
 
-    <div class="max-w-3xl mx-auto mt-16">
+                        <input
+                            id="domainInput"
+                            type="text"
+                            placeholder="yourname"
+                            class="flex-1 py-3.5 sm:py-5 bg-transparent outline-none text-base sm:text-lg text-white placeholder-purple-300/30 w-full">
 
-        <div class="bg-neutral-900/80 rounded-3xl border border-purple-500/20 shadow-[0_0_30px_rgba(147,51,234,0.15)] p-3 backdrop-blur-md">
+                        <span class="font-semibold text-cyan-400 neon-text-cyan shrink-0 ml-2">
+                            .arc
+                        </span>
 
-            <div class="flex flex-col md:flex-row gap-3">
+                    </div>
 
-                <div class="flex-1 flex items-center bg-black/40 border border-neutral-800 rounded-2xl px-5 focus-within:border-cyan-500/50 transition">
-
-                    <input
-                        id="domainInput"
-                        type="text"
-                        placeholder="yourname"
-                        class="flex-1 py-5 bg-transparent outline-none text-lg text-white placeholder-purple-300/30">
-
-                    <span class="font-semibold text-cyan-400 neon-text-cyan">
-                        .arc
-                    </span>
+                    <button
+                        id="registerBtn"
+                        class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white px-6 sm:text-lg sm:px-8 py-3.5 sm:py-5 rounded-xl sm:rounded-2xl font-semibold tracking-wide transition duration-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:neon-glow-pink disabled:opacity-40 whitespace-nowrap">
+                        Register Domain
+                    </button>
 
                 </div>
 
-                <button
-                    id="registerBtn"
-                    class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-5 rounded-2xl font-semibold tracking-wide transition duration-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:neon-glow-pink disabled:opacity-40">
-                    Register Domain
-                </button>
+            </div>
 
+            <div
+                id="statusMsg"
+                class="mt-4 sm:mt-5 text-center text-xs sm:text-sm text-cyan-400 neon-text-cyan min-h-[24px] px-4">
             </div>
 
         </div>
 
-        <div
-            id="statusMsg"
-            class="mt-5 text-center text-sm text-cyan-400 neon-text-cyan min-h-[24px]">
+    </section>
+
+    <section class="max-w-6xl mx-auto w-full px-4 sm:px-6 pb-16 sm:pb-24">
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+
+            <div class="bg-neutral-900/40 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-pink-500/10 hover:border-pink-500/30 transition duration-300 group">
+                <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-pink-400 group-hover:neon-text-pink transition">
+                    True Ownership
+                </h3>
+                <p class="text-sm sm:text-base text-purple-100/60 leading-relaxed">
+                    Domains are owned directly by your wallet and secured on-chain.
+                </p>
+            </div>
+
+            <div class="bg-neutral-900/40 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-pink-500/10 hover:border-purple-500/30 transition duration-300 group">
+                <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-purple-400 group-hover:text-purple-300 transition">
+                    USDC Settlement
+                </h3>
+                <p class="text-sm sm:text-base text-purple-100/60 leading-relaxed">
+                    Simple fixed pricing with USDC for transparent registration.
+                </p>
+            </div>
+
+            <div class="bg-neutral-900/40 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-pink-500/10 hover:border-cyan-400/30 transition duration-300 group sm:col-span-2 lg:col-span-1">
+                <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-cyan-400 group-hover:neon-text-cyan transition">
+                    Arc Native
+                </h3>
+                <p class="text-sm sm:text-base text-purple-100/60 leading-relaxed">
+                    Built specifically for the Arc ecosystem and future Web3 identity.
+                </p>
+            </div>
+
         </div>
 
-    </div>
+    </section>
 
-</section>
+</main>
 
-<!-- FEATURES -->
+<footer class="border-t border-pink-500/10 bg-black/20 mt-auto">
 
-<section class="max-w-6xl mx-auto px-6 pb-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col sm:flex-row justify-end gap-4 text-center sm:text-right">
 
-    <div class="grid md:grid-cols-3 gap-6">
-
-        <div class="bg-neutral-900/40 p-8 rounded-3xl border border-pink-500/10 hover:border-pink-500/30 transition duration-300 group">
-            <h3 class="text-xl font-bold mb-3 text-pink-400 group-hover:neon-text-pink transition">
-                True Ownership
-            </h3>
-            <p class="text-purple-100/60 leading-relaxed">
-                Domains are owned directly by your wallet and secured on-chain.
-            </p>
-        </div>
-
-        <div class="bg-neutral-900/40 p-8 rounded-3xl border border-pink-500/10 hover:border-purple-500/30 transition duration-300 group">
-            <h3 class="text-xl font-bold mb-3 text-purple-400 group-hover:text-purple-300 transition">
-                USDC Settlement
-            </h3>
-            <p class="text-purple-100/60 leading-relaxed">
-                Simple fixed pricing with USDC for transparent registration.
-            </p>
-        </div>
-
-        <div class="bg-neutral-900/40 p-8 rounded-3xl border border-pink-500/10 hover:border-cyan-400/30 transition duration-300 group">
-            <h3 class="text-xl font-bold mb-3 text-cyan-400 group-hover:neon-text-cyan transition">
-                Arc Native
-            </h3>
-            <p class="text-purple-100/60 leading-relaxed">
-                Built specifically for the Arc ecosystem and future Web3 identity.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- FOOTER -->
-
-<footer class="border-t border-pink-500/10 bg-black/20">
-
-    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-end gap-4">
-
-        <div class="text-sm text-purple-300/40 tracking-wide">
+        <div class="text-xs sm:text-sm text-purple-300/40 tracking-wide">
             Decentralized identity infrastructure for Arc Network.
         </div>
 
@@ -210,10 +204,10 @@ function setStatus(msg,isError=false){
 
     if(isError){
         statusMsg.className =
-        "mt-5 text-center text-sm text-rose-400 font-medium tracking-wide min-h-[24px]";
+        "mt-4 sm:mt-5 text-center text-xs sm:text-sm text-rose-400 font-medium tracking-wide min-h-[24px] px-4";
     }else{
         statusMsg.className =
-        "mt-5 text-center text-sm text-cyan-400 neon-text-cyan min-h-[24px]";
+        "mt-4 sm:mt-5 text-center text-xs sm:text-sm text-cyan-400 neon-text-cyan min-h-[24px] px-4";
     }
 }
 

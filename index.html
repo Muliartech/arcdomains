@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Web3 Identity on Arc</title>
+<title>Coming Soon | Web3 Domain Marketplace</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
@@ -49,12 +48,15 @@ body{
 </style>
 </head>
 
-<body class="text-neutral-100 selection:bg-pink-500 selection:text-white">
+<body class="text-neutral-100 selection:bg-pink-500 selection:text-white min-h-screen flex flex-col">
 
 <!-- NAVBAR -->
-
 <header class="sticky top-0 z-50 glass bg-[#090514]/70 border-b border-pink-500/20">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        
+        <div class="text-2xl font-black tracking-tighter text-white">
+            DOMAIN<span class="text-pink-500">X</span>
+        </div>
 
         <button
             id="connectBtn"
@@ -66,54 +68,48 @@ body{
 </header>
 
 <!-- HERO -->
-
-<section class="max-w-7xl mx-auto px-6 pt-24 pb-20">
+<main class="flex-grow flex flex-col justify-center max-w-7xl mx-auto px-6 pt-20 pb-20">
 
     <div class="text-center">
 
-        <div class="inline-flex items-center px-4 py-2 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-400 text-sm font-medium tracking-wide mb-8 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
-            Arc Network Identity Protocol
+        <div class="inline-flex items-center px-4 py-2 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-400 text-xs font-semibold tracking-widest uppercase mb-8 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+            <span class="w-2 h-2 rounded-full bg-pink-500 mr-2 animate-pulse"></span>
+            Marketplace Launching Soon
         </div>
 
-        <h1 class="text-6xl md:text-8xl font-black tracking-tight leading-none max-w-5xl mx-auto text-white">
-            Own Your<br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-400 to-cyan-400 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]">Digital Identity</span><br>
-            On Arc
+        <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none max-w-5xl mx-auto text-white">
+            The Future of<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-400 to-cyan-400 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]">Digital Real Estate</span>
         </h1>
 
-        <p class="mt-8 text-xl text-purple-200/60 max-w-2xl mx-auto leading-relaxed">
-            Register a permanent .arc domain secured by smart contracts
-            and settle instantly using USDC.
+        <p class="mt-6 text-lg text-purple-200/60 max-w-2xl mx-auto leading-relaxed">
+            A next-generation decentralized marketplace to discover, trade, and manage premium Web3 domain names. Connect your wallet to join the early-access waitlist.
         </p>
 
     </div>
 
-    <!-- DOMAIN SEARCH -->
-
-    <div class="max-w-3xl mx-auto mt-16">
+    <!-- WAITLIST / DOMAIN RESERVATION -->
+    <div class="max-w-3xl mx-auto mt-12 w-full">
 
         <div class="bg-neutral-900/80 rounded-3xl border border-purple-500/20 shadow-[0_0_30px_rgba(147,51,234,0.15)] p-3 backdrop-blur-md">
 
             <div class="flex flex-col md:flex-row gap-3">
 
                 <div class="flex-1 flex items-center bg-black/40 border border-neutral-800 rounded-2xl px-5 focus-within:border-cyan-500/50 transition">
-
                     <input
                         id="domainInput"
                         type="text"
-                        placeholder="yourname"
+                        placeholder="Reserve your dream handle..."
                         class="flex-1 py-5 bg-transparent outline-none text-lg text-white placeholder-purple-300/30">
-
                     <span class="font-semibold text-cyan-400 neon-text-cyan">
                         .arc
                     </span>
-
                 </div>
 
                 <button
-                    id="registerBtn"
+                    id="waitlistBtn"
                     class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white px-8 py-5 rounded-2xl font-semibold tracking-wide transition duration-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:neon-glow-pink disabled:opacity-40">
-                    Register Domain
+                    Join Waitlist
                 </button>
 
             </div>
@@ -127,38 +123,37 @@ body{
 
     </div>
 
-</section>
+</main>
 
 <!-- FEATURES -->
-
-<section class="max-w-6xl mx-auto px-6 pb-24">
+<section class="max-w-6xl mx-auto px-6 pb-24 w-full">
 
     <div class="grid md:grid-cols-3 gap-6">
 
         <div class="bg-neutral-900/40 p-8 rounded-3xl border border-pink-500/10 hover:border-pink-500/30 transition duration-300 group">
             <h3 class="text-xl font-bold mb-3 text-pink-400 group-hover:neon-text-pink transition">
-                True Ownership
+                Smart Escrow
             </h3>
-            <p class="text-purple-100/60 leading-relaxed">
-                Domains are owned directly by your wallet and secured on-chain.
+            <p class="text-purple-100/60 leading-relaxed text-sm">
+                Trade domains with absolute confidence. Funds and assets are locked in smart contracts until the transaction clears.
             </p>
         </div>
 
         <div class="bg-neutral-900/40 p-8 rounded-3xl border border-pink-500/10 hover:border-purple-500/30 transition duration-300 group">
             <h3 class="text-xl font-bold mb-3 text-purple-400 group-hover:text-purple-300 transition">
-                USDC Settlement
+                Zero Gas Bidding
             </h3>
-            <p class="text-purple-100/60 leading-relaxed">
-                Simple fixed pricing with USDC for transparent registration.
+            <p class="text-purple-100/60 leading-relaxed text-sm">
+                Make offers on premium domains securely off-chain. Only pay gas fees when the transaction is finalized.
             </p>
         </div>
 
         <div class="bg-neutral-900/40 p-8 rounded-3xl border border-pink-500/10 hover:border-cyan-400/30 transition duration-300 group">
             <h3 class="text-xl font-bold mb-3 text-cyan-400 group-hover:neon-text-cyan transition">
-                Arc Native
+                Instant Liquidity
             </h3>
-            <p class="text-purple-100/60 leading-relaxed">
-                Built specifically for the Arc ecosystem and future Web3 identity.
+            <p class="text-purple-100/60 leading-relaxed text-sm">
+                List your domains and access a global pool of buyers instantly. Settle securely in USDC or native tokens.
             </p>
         </div>
 
@@ -167,144 +162,63 @@ body{
 </section>
 
 <!-- FOOTER -->
-
-<footer class="border-t border-pink-500/10 bg-black/20">
-
-    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-end gap-4">
-
+<footer class="border-t border-pink-500/10 bg-black/20 mt-auto">
+    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="text-sm text-purple-300/40 tracking-wide">
-            Decentralized identity infrastructure for Arc Network.
+            © 2026 DomainX Protocol. Launching soon.
         </div>
-
     </div>
-
 </footer>
 
 <script>
-
-const ARC_RPC = "https://rpc.testnet.arc.network";
-const CHAIN_ID = 5042002;
-
-const CONTRACT_ADDRESS = "0x036d43dc4b52bf581EbD3527444cF845C00119e4";
-const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
-
-const usdcABI = [
-    "function approve(address spender,uint256 amount) public returns (bool)"
-];
-
-const domainABI = [
-    "function registerDomain(string memory domain) public"
-];
-
+// --- Web3 Logic ---
 let provider;
 let signer;
+let userAddress;
 
 const connectBtn = document.getElementById("connectBtn");
-const registerBtn = document.getElementById("registerBtn");
+const waitlistBtn = document.getElementById("waitlistBtn");
 const domainInput = document.getElementById("domainInput");
 const statusMsg = document.getElementById("statusMsg");
 
-function setStatus(msg,isError=false){
-
+function setStatus(msg, isError=false){
     statusMsg.textContent = msg;
-
     if(isError){
-        statusMsg.className =
-        "mt-5 text-center text-sm text-rose-400 font-medium tracking-wide min-h-[24px]";
-    }else{
-        statusMsg.className =
-        "mt-5 text-center text-sm text-cyan-400 neon-text-cyan min-h-[24px]";
+        statusMsg.className = "mt-5 text-center text-sm text-rose-400 font-medium tracking-wide min-h-[24px]";
+    } else {
+        statusMsg.className = "mt-5 text-center text-sm text-cyan-400 neon-text-cyan min-h-[24px]";
     }
 }
 
 connectBtn.addEventListener("click", async () => {
-
     if(!window.ethereum){
-        return setStatus(
-            "Please install MetaMask or another Web3 wallet.",
-            true
-        );
+        return setStatus("Please install MetaMask or another Web3 wallet.", true);
     }
 
     try{
-
         setStatus("Connecting wallet...");
-
         provider = new ethers.BrowserProvider(window.ethereum);
-
         signer = await provider.getSigner();
+        userAddress = await signer.getAddress();
 
-        const address = await signer.getAddress();
-
-        try{
-
-            await window.ethereum.request({
-                method:"wallet_switchEthereumChain",
-                params:[{
-                    chainId:ethers.toBeHex(CHAIN_ID)
-                }]
-            });
-
-        }catch(error){
-
-            if(error.code === 4902){
-
-                await window.ethereum.request({
-                    method:"wallet_addEthereumChain",
-                    params:[{
-                        chainId:ethers.toBeHex(CHAIN_ID),
-                        chainName:"Arc Testnet",
-                        rpcUrls:[ARC_RPC],
-                        nativeCurrency:{
-                            name:"ARC",
-                            symbol:"ARC",
-                            decimals:18
-                        },
-                        blockExplorerUrls:[
-                            "https://explorer.testnet.arc.network"
-                        ]
-                    }]
-                });
-
-            }else{
-                throw error;
-            }
-        }
-
-        connectBtn.textContent =
-            address.slice(0,6) +
-            "..." +
-            address.slice(-4);
-
+        connectBtn.textContent = userAddress.slice(0,6) + "..." + userAddress.slice(-4);
+        connectBtn.classList.add("border-pink-500/50", "text-pink-400");
+        
         setStatus("Wallet connected successfully.");
-
-    }catch(err){
-
-        setStatus(
-            "Connection failed: " + err.message,
-            true
-        );
+    } catch(err) {
+        setStatus("Connection failed: " + err.message, true);
     }
-
 });
 
-registerBtn.addEventListener("click", async () => {
-
-    if(!signer){
-        return setStatus(
-            "Connect wallet first.",
-            true
-        );
+waitlistBtn.addEventListener("click", async () => {
+    if(!signer || !userAddress){
+        return setStatus("Please connect your wallet first to join the waitlist.", true);
     }
 
-    let domain =
-        domainInput.value.trim().toLowerCase();
+    let domain = domainInput.value.trim().toLowerCase();
 
     if(!domain){
-        return setStatus(
-            "Enter a domain name.",
-            true
-        );
+        return setStatus("Enter a preferred handle to reserve.", true);
     }
 
     if(!domain.endsWith(".arc")){
@@ -312,70 +226,30 @@ registerBtn.addEventListener("click", async () => {
     }
 
     try{
+        waitlistBtn.disabled = true;
+        setStatus("Verifying wallet signature...");
 
-        registerBtn.disabled = true;
+        // Simulate a signature request for joining a waitlist securely
+        const message = `I want to join the DomainX waitlist and reserve: ${domain}`;
+        await signer.signMessage(message);
 
-        const usdc =
-            new ethers.Contract(
-                USDC_ADDRESS,
-                usdcABI,
-                signer
-            );
+        // Simulate API delay for saving to database
+        setStatus("Adding to early-access list...");
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const registry =
-            new ethers.Contract(
-                CONTRACT_ADDRESS,
-                domainABI,
-                signer
-            );
-
-        const price =
-            ethers.parseUnits("10",6);
-
-        setStatus(
-            "Step 1/2: Approve 10 USDC..."
-        );
-
-        const tx1 =
-            await usdc.approve(
-                CONTRACT_ADDRESS,
-                price
-            );
-
-        await tx1.wait();
-
-        setStatus(
-            "Step 2/2: Registering domain..."
-        );
-
-        const tx2 =
-            await registry.registerDomain(
-                domain
-            );
-
-        await tx2.wait();
-
-        setStatus(
-            "🎉 Successfully registered " +
-            domain
-        );
-
+        setStatus(`🎉 Success! Wallet ${userAddress.slice(0,6)}... has reserved ${domain} on the waitlist.`);
         domainInput.value = "";
-
-    }catch(err){
-
+        
+    } catch(err) {
         console.error(err);
-
-        setStatus(
-            "Transaction failed.",
-            true
-        );
-
-    }finally{
-
-        registerBtn.disabled = false;
+        if (err.code === "ACTION_REJECTED") {
+            setStatus("Signature rejected. You must sign to join the waitlist.", true);
+        } else {
+            setStatus("Waitlist registration failed.", true);
+        }
+    } finally {
+        waitlistBtn.disabled = false;
     }
-
 });
 </script>
 

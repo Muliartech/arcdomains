@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web3 Identity on Arc</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+* { font-family: 'Inter', sans-serif; }
+html { scroll-behavior: smooth; }
+body { background: #090514; }
+.glass { backdrop-filter: blur(20px); }
+.neon-text-pink { text-shadow: 0 0 8px rgba(244,63,94,.8), 0 0 20px rgba(244,63,94,.4); }
+.neon-text-cyan { text-shadow: 0 0 8px rgba(34,211,238,.8), 0 0 20px rgba(34,211,238,.4); }
+.neon-glow-pink { box-shadow: 0 0 15px rgba(244,63,94,.5); }
+.neon-glow-cyan { box-shadow: 0 0 15px rgba(34,211,238,.5); }
+</style>
+</head>
+
+<body class="text-neutral-100 selection:bg-pink-500 selection:text-white flex flex-col min-h-screen antialiased">
+
+<header class="sticky top-0 z-50 glass bg-[#090514]/70 border-b border-pink-500/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-end">
+    <button id="connectBtn" class="border border-cyan-400/40 bg-transparent text-cyan-400 hover:bg-cyan-400/10 px-4 py-2 rounded-xl text-sm font-medium transition duration-300 neon-text-cyan hover:neon-glow-cyan">
+      Connect Wallet
+    </button>
+  </div>
+</header>
+
+<main class="flex-grow flex flex-col justify-start items-center">
+  <section class="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-16 md:pt-28 pb-12 text-center">
+    <div class="inline-flex items-center px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-950/30 text-pink-400 text-xs sm:text-sm font-medium tracking-wide mb-6 sm:mb-8 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+      Arc Network Identity Protocol
+    </div>
+
+    <h1 class="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[1.1] sm:leading-none text-white">
+      Own Your<br>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-400 to-cyan-400 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]">Digital Identity</span><br>
+      On Arc
+    </h1>
+
+    <p class="mt-6 sm:mt-8 text-base sm:text-lg md:text-xl text-purple-200/60 max-w-2xl mx-auto leading-relaxed px-2">
+      Register a permanent .arc domain secured by smart contracts and settle instantly using USDC.
+    </p>
+
+    <div class="max-w-2xl mx-auto mt-10 sm:mt-16 text-left">
+      <div class="bg-neutral-900/80 rounded-2xl sm:rounded-3xl border border-purple-500/20 shadow-[0_0_30px_rgba(147,51,234,0.15)] p-2 sm:p-3 backdrop-blur-md">
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div class="flex-1 flex items-center bg-black/40 border border-neutral-800 rounded-xl sm:rounded-2xl px-4 sm:px-5 focus-within:border-cyan-500/50 transition">
+            <input id="domainInput" type="text" placeholder="yourname" autocomplete="off" maxlength="63" class="flex-1 py-3.5 sm:py-5 bg-transparent outline-none text-base sm:text-lg text-white placeholder-purple-300/30 w-full">
+            <span class="font-semibold text-cyan-400 neon-text-cyan shrink-0 ml-2">.arc</span>
+          </div>
+          <button id="registerBtn" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white px-6 sm:text-lg sm:px-8 py-3.5 sm:py-5 rounded-xl sm:rounded-2xl font-semibold tracking-wide transition duration-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:neon-glow-pink disabled:opacity-40 whitespace-nowrap">
+            Register Domain
+          </button>
+        </div>
+      </div>
+      <div id="statusMsg" role="status" aria-live="polite" class="mt-4 sm:mt-5 text-center text-xs sm:text-sm text-cyan-400 neon-text-cyan min-h-[24px] px-4"></div>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto w-full px-4 sm:px-6 pb-20 md:pb-28">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div class="bg-neutral-900/40 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-pink-500/10 hover:border-pink-500/30 transition duration-300 group">
+        <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-pink-400 group-hover:neon-text-pink transition">True Ownership</h3>
+        <p class="text-sm sm:text-base text-purple-100/60 leading-relaxed">Domains are owned directly by your wallet and secured on-chain.</p>
+      </div>
+      <div class="bg-neutral-900/40 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-pink-500/10 hover:border-purple-500/30 transition duration-300 group">
+        <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-purple-400 group-hover:text-purple-300 transition">USDC Settlement</h3>
+        <p class="text-sm sm:text-base text-purple-100/60 leading-relaxed">Simple fixed pricing with USDC for transparent registration.</p>
+      </div>
+      <div class="bg-neutral-900/40 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-pink-500/10 hover:border-cyan-400/30 transition duration-300 group sm:col-span-2 lg:col-span-1">
+        <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-cyan-400 group-hover:neon-text-cyan transition">Arc Native</h3>
+        <p class="text-sm sm:text-base text-purple-100/60 leading-relaxed">Built specifically for the Arc ecosystem and future Web3 identity.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-pink-500/10 bg-black/20 mt-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex items-center justify-center text-center">
+    <div class="text-xs sm:text-sm text-purple-300/40 tracking-wide">Decentralized identity infrastructure for Arc Network.</div>
+  </div>
+</footer>
+
+<script>
+/*
+ * Arc Mainnet configuration.
+ * Confirm the deployed contract's ABI, constructor settings, and token address
+ * before using real funds. The example below assumes registerDomain(string)
+ * and a USDC approval of 10 USDC (6 decimals).
+ */
+const ARC_RPC = "https://rpc.mainnet.arc.io";
+const CHAIN_ID = 5042;
+const CONTRACT_ADDRESS = "0x24bB764424e3887F6e2b546B22EB825E95c47d60";
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
+
+const usdcABI = [
+  "function approve(address spender,uint256 amount) returns (bool)"
+];
+const domainABI = [
+  "function registerDomain(string domain)"
+];
+
+let provider;
+let signer;
+
+const connectBtn = document.getElementById("connectBtn");
+const registerBtn = document.getElementById("registerBtn");
+const domainInput = document.getElementById("domainInput");
+const statusMsg = document.getElementById("statusMsg");
+
+function setStatus(message, isError = false) {
+  statusMsg.textContent = message;
+  statusMsg.className = isError
+    ? "mt-4 sm:mt-5 text-center text-xs sm:text-sm text-rose-400 font-medium tracking-wide min-h-[24px] px-4"
+    : "mt-4 sm:mt-5 text-center text-xs sm:text-sm text-cyan-400 neon-text-cyan min-h-[24px] px-4";
+}
+
+async function ensureArcMainnet() {
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: ethers.toBeHex(CHAIN_ID) }]
+    });
+  } catch (error) {
+    if (error.code !== 4902) throw error;
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [{
+        chainId: ethers.toBeHex(CHAIN_ID),
+        chainName: "Arc",
+        rpcUrls: [ARC_RPC],
+        nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
+        blockExplorerUrls: ["https://explorer.arc.io"]
+      }]
+    });
+  }
+}
+
+connectBtn.addEventListener("click", async () => {
+  if (!window.ethereum) {
+    setStatus("Please install MetaMask or another compatible Web3 wallet.", true);
+    return;
+  }
+
+  try {
+    setStatus("Connecting wallet to Arc Mainnet...");
+    await ensureArcMainnet();
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    signer = await provider.getSigner();
+
+    const address = await signer.getAddress();
+    connectBtn.textContent = address.slice(0, 6) + "..." + address.slice(-4);
+    setStatus("Wallet connected to Arc Mainnet.");
+  } catch (error) {
+    console.error(error);
+    setStatus("Connection failed: " + (error.shortMessage || error.message), true);
+  }
+});
+
+registerBtn.addEventListener("click", async () => {
+  if (!window.ethereum) {
+    setStatus("Please install a compatible Web3 wallet.", true);
+    return;
+  }
+  if (!signer) {
+    setStatus("Connect your wallet first.", true);
+    return;
+  }
+
+  let domain = domainInput.value.trim().toLowerCase();
+  domain = domain.replace(/\.arc$/i, "");
+
+  if (!/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(domain)) {
+    setStatus("Use 1–63 letters, numbers, or internal hyphens; do not include spaces.", true);
+    return;
+  }
+
+  const fullDomain = domain + ".arc";
+
+  try {
+    registerBtn.disabled = true;
+    await ensureArcMainnet();
+
+    // Ensure the signer is still connected to the intended chain.
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+
+    const usdc = new ethers.Contract(USDC_ADDRESS, usdcABI, signer);
+    const registry = new ethers.Contract(CONTRACT_ADDRESS, domainABI, signer);
+    const price = ethers.parseUnits("10", 6);
+
+    setStatus("Step 1/2: Approve 10 USDC. Confirm the transaction in your wallet...");
+    const approvalTx = await usdc.approve(CONTRACT_ADDRESS, price);
+    await approvalTx.wait();
+
+    setStatus("Step 2/2: Registering " + fullDomain + ". Confirm the transaction...");
+    const registrationTx = await registry.registerDomain(fullDomain);
+    await registrationTx.wait();
+
+    setStatus("Successfully registered " + fullDomain + ".");
+    domainInput.value = "";
+  } catch (error) {
+    console.error(error);
+    setStatus("Transaction failed: " + (error.shortMessage || error.reason || error.message || "Please check the contract ABI, token address, and network."), true);
+  } finally {
+    registerBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
